@@ -124,7 +124,6 @@ DEMUXERS="\
 	--enable-demuxer=ac3 \
 	--enable-demuxer=flac \
 	--enable-demuxer=matroska \
-	--enable-demuxer=mpeg \
 	--enable-demuxer=pmp \
 	--enable-demuxer=oma \
 	--enable-demuxer=pcm_s16le \
@@ -186,7 +185,16 @@ DEMUXERS="\
 	--enable-demuxer=mgsts    \
 	--enable-demuxer=microdvd \
 	--enable-demuxer=mjpeg \
-	--enable-demuxer=mov"
+	--enable-demuxer=mov \
+        --enable-demuxer=subviewer \
+        --enable-demuxer=subviewer1 \
+        --enable-demuxer=sup \
+        --enable-demuxer=svag \
+        --enable-demuxer=swf \
+        --enable-demuxer=sol \
+        --enable-demuxer=sox \
+        --enable-demuxer=spdif \
+        --enable-demuxer=srt"
 
 VIDEO_ENCODERS="\
 	  --enable-encoder=huffyuv \
@@ -250,6 +258,9 @@ function build_vita
 	${MUXERS} \
 	${PARSERS} \
 	${PROTOCOLS}
+
+make clean
+make install
 }
 
 build_vita
