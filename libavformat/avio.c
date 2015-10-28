@@ -244,7 +244,7 @@ static struct URLProtocol *url_find_protocol(const char *filename)
 
     if (filename[proto_len] != ':' &&
         (filename[proto_len] != ',' || !strchr(filename + proto_len + 1, ':')) ||
-        is_dos_path(filename))
+        is_dos_path(filename) || is_vita_path(filename))
         strcpy(proto_str, "file");
     else
         av_strlcpy(proto_str, filename,

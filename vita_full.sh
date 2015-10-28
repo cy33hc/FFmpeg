@@ -1,0 +1,25 @@
+./configure --enable-cross-compile \
+   --target-os=linux \
+   --extra-libs="-lgcc" \
+   --arch=arm \
+   --cc=arm-vita-eabi-gcc \
+   --cross-prefix=arm-vita-eabi- \
+   --nm=arm-vita-eabi-nm \
+   --disable-thumb \
+   --prefix=$VITASDK/arm-vita-eabi \
+   --extra-cflags="-Wl,-q -Wall -O3 -I$VITASDK/arm-vita-eabi/include" \
+   --disable-shared \
+   --enable-static \
+   --enable-zlib \
+   --enable-protocol=cache \
+   --enable-protocol=file \
+   --enable-protocol=ftp \
+   --enable-protocol=http \
+   --enable-protocol=https \
+   --enable-protocol=unix \
+   --disable-avdevice \
+   --disable-filters \
+   --disable-programs \
+   --disable-hwaccels \
+   --disable-doc \
+   --disable-decoder=hap

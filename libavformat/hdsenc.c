@@ -34,6 +34,9 @@
 #include "libavutil/intreadwrite.h"
 #include "libavutil/mathematics.h"
 #include "libavutil/opt.h"
+#if defined(__vita__)
+#include <psp2/io/stat.h>
+#endif
 
 typedef struct Fragment {
     char file[1024];
@@ -318,7 +321,11 @@ static int hds_write_header(AVFormatContext *s)
     int ret = 0, i;
     AVOutputFormat *oformat;
 
+#if defined(__vita__)
+    if (sceIoMkdir(s->filename, 0777) == -1 && errno != EEXIST) {
+#else
     if (mkdir(s->filename, 0777) == -1 && errno != EEXIST) {
+#endif
         ret = AVERROR(errno);
         av_log(s, AV_LOG_ERROR , "Failed to create directory %s\n", s->filename);
         goto fail;
@@ -556,7 +563,11 @@ static int hds_write_trailer(AVFormatContext *s)
             snprintf(filename, sizeof(filename), "%s/stream%d.abst", s->filename, i);
             unlink(filename);
         }
+#if defined(__vita__)
+        sceIoRmdir(s->filename);
+#else
         rmdir(s->filename);
+#endif
     }
 
     hds_free(s);

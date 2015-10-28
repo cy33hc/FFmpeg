@@ -37,6 +37,10 @@
 #include <stdlib.h>
 #include "os_support.h"
 #include "url.h"
+#if defined(__vita__)
+#include <psp2/io/stat.h>
+#endif
+
 
 /* Some systems may not have S_ISFIFO */
 #ifndef S_ISFIFO
@@ -162,7 +166,12 @@ static int file_delete(URLContext *h)
     const char *filename = h->filename;
     av_strstart(filename, "file:", &filename);
 
-    ret = rmdir(filename);
+    #if defined(__vita__)
+        sceIoRmdir(filename);
+    #else
+        ret = rmdir(filename);
+    #endif
+
     if (ret < 0 && errno == ENOTDIR)
         ret = unlink(filename);
     if (ret < 0)

@@ -25,6 +25,10 @@
 #include <unistd.h>
 #endif
 
+#if defined(__vita__)
+#include <psp2/io/stat.h>
+#endif
+
 #include "avformat.h"
 #include "internal.h"
 #include "os_support.h"
@@ -291,8 +295,11 @@ static int ism_write_header(AVFormatContext *s)
     SmoothStreamingContext *c = s->priv_data;
     int ret = 0, i;
     AVOutputFormat *oformat;
-
+#if defined(__vita__)
+    if (sceIoMkdir(s->filename, 0777) == -1 && errno != EEXIST) {
+#else
     if (mkdir(s->filename, 0777) == -1 && errno != EEXIST) {
+#endif
         ret = AVERROR(errno);
         av_log(s, AV_LOG_ERROR, "mkdir failed\n");
         goto fail;
@@ -322,7 +329,11 @@ static int ism_write_header(AVFormatContext *s)
             goto fail;
         }
         snprintf(os->dirname, sizeof(os->dirname), "%s/QualityLevels(%"PRId64")", s->filename, (int64_t)s->streams[i]->codec->bit_rate);
+#if defined(__vita__)
+        if (sceIoMkdir(os->dirname, 0777) == -1 && errno != EEXIST) {
+#else
         if (mkdir(os->dirname, 0777) == -1 && errno != EEXIST) {
+#endif
             ret = AVERROR(errno);
             av_log(s, AV_LOG_ERROR, "mkdir failed\n");
             goto fail;
@@ -565,7 +576,11 @@ static int ism_flush(AVFormatContext *s, int final)
                 memmove(os->fragments, os->fragments + remove, os->nb_fragments * sizeof(*os->fragments));
             }
             if (final && c->remove_at_exit)
+            #if defined(__vita__)
+                sceIoRmdir(os->dirname);
+            #else
                 rmdir(os->dirname);
+            #endif
         }
     }
 
@@ -608,7 +623,11 @@ static int ism_write_trailer(AVFormatContext *s)
         char filename[1024];
         snprintf(filename, sizeof(filename), "%s/Manifest", s->filename);
         unlink(filename);
+    #if defined(__vita__)
+        sceIoRmdir(s->filename);
+    #else
         rmdir(s->filename);
+    #endif
     }
 
     ism_free(s);

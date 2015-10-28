@@ -76,6 +76,15 @@ static inline int is_dos_path(const char *path)
     return 0;
 }
 
+static inline int is_vita_path(const char *path)
+{
+#if defined(__vita__)
+	if (!strncmp(path, "cache0:", 7) || !strncmp(path, "app0:", 5))
+		return 1;
+#endif
+	return 0;
+}
+
 #if defined(__OS2__) || defined(__Plan9__)
 #define SHUT_RD 0
 #define SHUT_WR 1
