@@ -167,7 +167,7 @@ static int file_delete(URLContext *h)
     av_strstart(filename, "file:", &filename);
 
     #if defined(__vita__)
-        sceIoRmdir(filename);
+        ret = sceIoRmdir(filename);
     #else
         ret = rmdir(filename);
     #endif
